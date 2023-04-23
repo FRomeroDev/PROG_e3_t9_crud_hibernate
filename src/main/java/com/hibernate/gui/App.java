@@ -35,7 +35,7 @@ public class App {
 	private JButton btnGuardar;
 	private JButton btnActualizar;
 	private JButton btnBorrar;
-
+	
 	private SerieDAO serieDAO = new SerieDAO();
 	private List<Serie> series = null;
 
@@ -171,7 +171,6 @@ public class App {
 						row[2] = s.getNumTemp();
 						row[3] = s.getNumCapi();
 						modelSerieDB.addRow(row);
-
 					}
 
 				} catch (Exception e1) {
@@ -218,7 +217,7 @@ public class App {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
-
+					
 					serieDAO.deleteSerie(Integer.parseInt(txtFid.getText()));
 					btnActualizar.doClick();
 					txtFid.setText(null);
@@ -226,7 +225,7 @@ public class App {
 					txtFnumTem.setText(null);
 					txtFcap.setText(null);
 					JOptionPane.showMessageDialog(null, "Serie borrada");
-				
+					
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					System.out.println("Error: seria no borrada");
