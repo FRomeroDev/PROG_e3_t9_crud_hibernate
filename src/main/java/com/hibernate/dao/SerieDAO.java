@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import com.hibernate.model.Serie;
 import com.hibernate.util.HibernateUtil;
@@ -13,6 +12,21 @@ import com.hibernate.util.HibernateUtil;
 /* Operaciones básicas para interactuar con la BD */
 public class SerieDAO {
 
+	
+	public void insertSerie(Serie s) {
+		Transaction transaction = null;
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			transaction = session.beginTransaction();
+			session.persist(s);
+			transaction.commit();
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			e.printStackTrace();
+			System.err.println("Error al insertar" + e.getMessage());
+		}
+	}
 	/* UPDATE */
 	/*
 	 * Esta función requiere que le pasemos como parámetro el objeto persona cuyos

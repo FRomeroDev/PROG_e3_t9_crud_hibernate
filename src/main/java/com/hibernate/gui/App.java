@@ -25,7 +25,7 @@ import com.hibernate.model.Serie;
 public class App {
 
 	private JFrame frame;
-	private DefaultTableModel modelSerieDB;
+	private DefaultTableModel modelSerieDB = new DefaultTableModel();
 	private JScrollPane scrollPanSerie;
 	private JTable tableSerieDB;
 	private JTextField txtFid;
@@ -33,9 +33,9 @@ public class App {
 	private JTextField txtFnumTem;
 	private JTextField txtFcap;
 	private JButton btnGuardar;
-	private JButton btnActualizar;
+	private JButton btnActualizarBD;
 	private JButton btnBorrar;
-	
+
 	private SerieDAO serieDAO = new SerieDAO();
 	private List<Serie> series = null;
 
@@ -60,6 +60,11 @@ public class App {
 				}
 			}
 		});
+	}
+
+	public boolean isCellEditable(int row, int column) {
+
+		return false;
 	}
 
 	/**
@@ -103,6 +108,7 @@ public class App {
 		});
 		tableSerieDB.setBounds(67, 81, 425, 144);
 		tableSerieDB.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		// tableSerieDB.setModel(tableModel);
 		frame.getContentPane().add(tableSerieDB);
 
 		scrollPanSerie = new JScrollPane(tableSerieDB);
@@ -130,8 +136,8 @@ public class App {
 		frame.getContentPane().add(lblCap);
 
 		txtFid = new JTextField();
-		txtFid.setFont(new Font("Dialog", Font.PLAIN, 14));
 		txtFid.setEnabled(false);
+		txtFid.setFont(new Font("Dialog", Font.PLAIN, 14));
 		txtFid.setBounds(185, 329, 114, 27);
 		frame.getContentPane().add(txtFid);
 		txtFid.setColumns(10);
@@ -154,9 +160,9 @@ public class App {
 		txtFcap.setBounds(185, 479, 114, 27);
 		frame.getContentPane().add(txtFcap);
 
-		btnActualizar = new JButton("Actualizar");
-		btnActualizar.setFont(new Font("Dialog", Font.BOLD, 15));
-		btnActualizar.addActionListener(new ActionListener() {
+		btnActualizarBD = new JButton("ActualizarBD");
+		btnActualizarBD.setFont(new Font("Dialog", Font.BOLD, 15));
+		btnActualizarBD.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
@@ -179,28 +185,30 @@ public class App {
 				}
 			}
 		});
-		btnActualizar.setBounds(334, 537, 135, 27);
-		frame.getContentPane().add(btnActualizar);
-		btnActualizar.doClick();
+		btnActualizarBD.setBounds(337, 574, 135, 27);
+		frame.getContentPane().add(btnActualizarBD);
+		btnActualizarBD.setVisible(false);
+		btnActualizarBD.doClick();
 
 		btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
-					Serie s = new Serie();
-				
-					s.setId(Integer.parseInt(txtFid.getText()));
-					s.setNombre(txtFnom.getText());
-					s.setNumTemp(Integer.parseInt(txtFnumTem.getText()));
-					s.setNumCapi(Integer.parseInt(txtFcap.getText()));
-					serieDAO.updateSerie(s);
+
+					String nombre = txtFnom.getText();
+					int numTemp = Integer.parseInt(txtFnumTem.getText());
+					int numCapi = Integer.parseInt(txtFcap.getText());
+
+					Serie s = new Serie(nombre, numTemp, numCapi);
+
+					serieDAO.insertSerie(s);
 					txtFid.setText(null);
 					txtFnom.setText(null);
 					txtFnumTem.setText(null);
 					txtFcap.setText(null);
-					btnActualizar.doClick();
-					JOptionPane.showMessageDialog(null, "Serie actualizada");
+					btnActualizarBD.doClick();
+					JOptionPane.showMessageDialog(null, "Serie creada");
 
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -217,15 +225,15 @@ public class App {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
-					
+
 					serieDAO.deleteSerie(Integer.parseInt(txtFid.getText()));
-					btnActualizar.doClick();
+					btnActualizarBD.doClick();
 					txtFid.setText(null);
 					txtFnom.setText(null);
 					txtFnumTem.setText(null);
 					txtFcap.setText(null);
 					JOptionPane.showMessageDialog(null, "Serie borrada");
-					
+
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					System.out.println("Error: seria no borrada");
@@ -235,5 +243,35 @@ public class App {
 		btnBorrar.setFont(new Font("Dialog", Font.BOLD, 15));
 		btnBorrar.setBounds(557, 537, 135, 27);
 		frame.getContentPane().add(btnBorrar);
+
+		JButton btnActualizarCam = new JButton("Actualizar");
+		btnActualizarCam.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				try {
+					Serie s = new Serie();
+
+					s.setId(Integer.parseInt(txtFid.getText()));
+					s.setNombre(txtFnom.getText());
+					s.setNumTemp(Integer.parseInt(txtFnumTem.getText()));
+					s.setNumCapi(Integer.parseInt(txtFcap.getText()));
+					serieDAO.updateSerie(s);
+					txtFid.setText(null);
+					txtFnom.setText(null);
+					txtFnumTem.setText(null);
+					txtFcap.setText(null);
+					btnActualizarBD.doClick();
+					JOptionPane.showMessageDialog(null, "Serie actualizada");
+
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					System.out.println("Error: serie no guardada");
+				}
+
+			}
+		});
+		btnActualizarCam.setFont(new Font("Dialog", Font.BOLD, 15));
+		btnActualizarCam.setBounds(337, 537, 135, 27);
+		frame.getContentPane().add(btnActualizarCam);
 	}
 }
