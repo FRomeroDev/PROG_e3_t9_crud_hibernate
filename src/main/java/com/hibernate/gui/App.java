@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -62,11 +63,6 @@ public class App {
 		});
 	}
 
-	public boolean isCellEditable(int row, int column) {
-
-		return false;
-	}
-
 	/**
 	 * Create the application.
 	 */
@@ -78,6 +74,7 @@ public class App {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	@SuppressWarnings("serial")
 	private void initialize() {
 
 		frame = new JFrame();
@@ -85,7 +82,12 @@ public class App {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		modelSerieDB = new DefaultTableModel();
+		modelSerieDB = new DefaultTableModel() {
+			public boolean isCellEditable(int row, int column) {
+
+				return false; // No seleccionable la celdas
+			}
+		};
 		modelSerieDB.addColumn("ID");
 		modelSerieDB.addColumn("Título");
 		modelSerieDB.addColumn("NºTemporadas");
@@ -110,6 +112,16 @@ public class App {
 		tableSerieDB.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		// tableSerieDB.setModel(tableModel);
 		frame.getContentPane().add(tableSerieDB);
+		
+		/*
+		 * Centra los registros de la tabla
+		 */
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+		tableSerieDB.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+		tableSerieDB.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+		tableSerieDB.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+		tableSerieDB.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
 
 		scrollPanSerie = new JScrollPane(tableSerieDB);
 		scrollPanSerie.setBounds(63, 36, 676, 262);
